@@ -4,41 +4,19 @@
 
 O objetivo do projeto Ridely é fortalecer a capacidade de analise e tomada de decisão baseada em contextos. 
 
-```mermind
-classDiagram
-  class Ride {
-    <<entity>>
-    status: enum
-  }
+O projeto foi estruturado baseado no diagrama de classes abaixo, que representam o funcionamento de um aplitivo de taxi funcionando na região de Aracaju.
 
-  class Address {
-    <<entity>>
-    text: string
-    location: geography::point
-  }
+## REFERÊNCIAS
 
-  class Driver {
-    <<entity>>
-    name: string
-    available: bool
-  }
+- [DESAFIO](CHALLENGE.md)
+- [MVP](MVP.md)
+- [RELEASE](RELEASE.md)
 
-  class Car {
-    <<entity>>
-    license_plate: string
-    model: string
-    color: string
-  }
+## REPOSITÓRIOS BASES
 
-  class Passenger {
-    <<entity>>
-    name: string
-  }
+- [NODE]()
+- [KOTLIN]()
 
-  Address "1" -- "1" Ride : pickup
-  Address "1" -- "1" Ride : dropoff
-  Ride "*" -- "1" Driver : drives
-  Ride "*" -- "1" Passenger : rides
-  Driver "1" -- "1" Car : owns
+---
 
-```
+![Ridely](./assets/banner-ridely.jpg)
