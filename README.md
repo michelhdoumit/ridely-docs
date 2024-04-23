@@ -15,7 +15,7 @@ O projeto foi estruturado baseado no diagrama de classes abaixo, que representam
 ## REPOSITÓRIOS BASES
 
 - [NODE]()
-- [KOTLIN]()
+- [KOTLIN](https://github.com/jaya-academy/ridely-kotlin)
 
 ---
 
