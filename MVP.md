@@ -23,33 +23,33 @@ do grupo de estudo e aprofundamento.
 
 > Request Body
 
-```json
+```typescript
 {
-  "passenger": {
-    "name": string
-    "email": string
-  },
-  "pick_up": string,
-  "drop_off": string
+    passenger: {
+        name: string;
+        email: string;
+    }
+    pick_up: string;
+    drop_off: string;
 }
 ```
 
 > Response Body
 
-```json
+```typescript
 {
-  "id": number,
-  "status": string,
-  "drop_off": string,
-  "pick_up": string,
-  "driver": {
-    "name": string,
-    "car": {
-      "color": string,
-      "license_plate": string,
-      "model": string
+    id: number;
+    status: string;
+    drop_off: string;
+    pick_up: string;
+    driver: {
+        name: string;
+        car: {
+            color: string;
+            license_plate: string;
+            model: string
+        }
     }
-  }
 }
 ```
 
@@ -61,20 +61,20 @@ do grupo de estudo e aprofundamento.
 
 > Request Body
 
-```json
+```typescript
 {
-  "id": string
+  id: string
 }
 ```
 
 > Response Body
 
-```json
+```typescript
 {
-  "id": number,
-  "status": string,
-  "drop_off": string,
-  "pick_up": string
+    id: number;
+    status: string;
+    drop_off: string;
+    pick_up: string;
 }
 ```
 
@@ -86,24 +86,24 @@ do grupo de estudo e aprofundamento.
 
 > Request Body
 
-```json
+```typescript
 {
-  "id": string
+  id: string
 }
 ```
 
 > Response Body
 
-```json
+```typescript
 {
-  "id": number,
-  "status": string,
-  "drop_off": string
-  "pick_up": string,
-  "passenger": {
-    "email": string,
-    "name": string
-  }
+    id: number;
+    status: string;
+    drop_off: string;
+    pick_up: string;
+    passenger: {
+        email: string;
+        name: string;
+    }
 }
 ```
 
@@ -115,24 +115,24 @@ do grupo de estudo e aprofundamento.
 
 > Request Body
 
-```json
+```typescript
 {
-  "id": number
+  id: number
 }
 ```
 
 > Response Body
 
-```json
+```typescript
 {
-  "id": number,
-  "status": string,
-  "drop_off": string,
-  "pick_up": string,
-  "passenger": {
-    "email": string,
-    "name": string
-  }
+    id: number;
+    status: string;
+    drop_off: string;
+    pick_up: string;
+    passenger: {
+        email: string;
+        name: string;
+    }
 }
 ```
 
@@ -144,24 +144,24 @@ do grupo de estudo e aprofundamento.
 
 > Request Body
 
-```json
+```typescript
 {
-  "id": number,
-  "valor": number
+    id: number;
+    price: number;
 }
 ```
 
 > Response Body
 
-```json
+```typescript
 {
-  "id": number,
-  "status": string,
-  "drop_off": string,
-  "price": number,
-  "passenger": {
-    "email": string,
-    "name": string
-  }
+    id: number;
+    status: string;
+    drop_off: string;
+    price: number;
+    passenger: {
+        email: string;
+        name: string;
+    }
 }
 ```
