@@ -79,6 +79,26 @@ do grupo de estudo e aprofundamento.
 ```
 
 ---
+### Buscar Corrida Alocada [Motorista]
+
+[GET] /drivers/{id}/get-rides
+
+> Response Body
+
+```typescript
+{
+    id: number;
+    status: string;
+    drop_off: string;
+    pick_up: string;
+    passenger: {
+        email: string;
+        name: string;
+    }
+}
+```
+
+---
 
 ### Aceitar Corrida [Motorista]
 
