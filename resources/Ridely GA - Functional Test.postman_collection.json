@@ -1,0 +1,2367 @@
+{
+	"info": {
+		"_postman_id": "735bc628-c41e-478c-a2c4-d90be0758a1a",
+		"name": "Ridely GA - Functional Test",
+		"description": "Collection of API tests for Passengers and Drivers endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "414153",
+		"_collection_link": "https://l3l3co.postman.co/workspace/New-Team-Workspace~d450d5e4-7c3a-4449-9f65-226a04a3389e/collection/414153-735bc628-c41e-478c-a2c4-d90be0758a1a?action=share&source=collection_link&creator=414153"
+	},
+	"item": [
+		{
+			"name": "Driver Unavailable",
+			"item": [
+				{
+					"name": "Request a Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Driver unavailable\", function () {",
+									"    pm.response.to.have.status(503);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"dropOff\", '{{$randomStreetAddress}}')\r",
+									"pm.environment.set(\"pickUp\", '{{$randomStreetAddress}}')"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"passenger\": {\n        \"name\": \"{{passengerName}}\",\n        \"email\": \"{{passengerEmail}}\"\n    },\n    \"pick_up\": \"{{pickUp}}\",\n    \"drop_off\": \"{{dropOff}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/request-driver",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"request-driver"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Request a Driver",
+			"item": [
+				{
+					"name": "Create Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"driverId\", jsonData.id)",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo",
+									"pm.test(\"Validate 'name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'available' is present and is a boolean\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('available').that.is.a('boolean');",
+									"});",
+									"",
+									"pm.test(\"Validate 'activation_date' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('activation_date').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'car'",
+									"pm.test(\"Validate 'car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"driverName\", '{{$randomFullName}}')\r",
+									"pm.environment.set(\"licensePlate\", \"{{$randomAbbreviation}}-{{$randomCreditCardMask}}\")\r",
+									"pm.environment.set(\"model\", \"{{$randomProductAdjective}}\")\r",
+									"pm.environment.set(\"color\", \"{{$randomColor}}\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{driverName}}\",\n    \"available\": true,\n    \"car\": {\n        \"license_plate\": \"{{licensePlate}}\",\n        \"model\": \"{{model}}\",\n        \"color\": \"{{color}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drivers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request a Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"rideId\", jsonData.id)",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('driver').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver'",
+									"pm.test(\"Validate 'driver.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver.car'",
+									"pm.test(\"Validate 'driver.car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"dropOff\", '{{$randomStreetAddress}}')\r",
+									"pm.environment.set(\"pickUp\", '{{$randomStreetAddress}}')"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"passenger\": {\n        \"name\": \"{{passengerName}}\",\n        \"email\": \"{{passengerEmail}}\"\n    },\n    \"pick_up\": \"{{pickUp}}\",\n    \"drop_off\": \"{{dropOff}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/request-driver",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"request-driver"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/{{rideId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"{{rideId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drivers/{{driverId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers",
+								"{{driverId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Refuse a Ride",
+			"item": [
+				{
+					"name": "Create Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate 'id' is present and is a string\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"driverId\", jsonData.id);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo",
+									"pm.test(\"Validate 'name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'available' is present and is a boolean\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('available').that.is.a('boolean');",
+									"});",
+									"",
+									"pm.test(\"Validate 'activation_date' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('activation_date').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'car'",
+									"pm.test(\"Validate 'car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"driverName\", '{{$randomFullName}}')\r",
+									"pm.environment.set(\"licensePlate\", \"{{$randomAbbreviation}}-{{$randomCreditCardMask}}\")\r",
+									"pm.environment.set(\"model\", \"{{$randomProductAdjective}}\")\r",
+									"pm.environment.set(\"color\", \"{{$randomColor}}\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{driverName}}\",\n    \"available\": true,\n    \"car\": {\n        \"license_plate\": \"{{licensePlate}}\",\n        \"model\": \"{{model}}\",\n        \"color\": \"{{color}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drivers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request a Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"rideId\", jsonData.id);",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('driver').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver'",
+									"pm.test(\"Validate 'driver.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver.car'",
+									"pm.test(\"Validate 'driver.car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"dropOff\", '{{$randomStreetAddress}}')\r",
+									"pm.environment.set(\"pickUp\", '{{$randomStreetAddress}}')"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"passenger\": {\n        \"name\": \"{{passengerName}}\",\n        \"email\": \"{{passengerEmail}}\"\n    },\n    \"pick_up\": \"{{pickUp}}\",\n    \"drop_off\": \"{{dropOff}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/request-driver",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"request-driver"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refuse a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('passenger').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'passenger'",
+									"pm.test(\"Validate 'passenger.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger.email' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('email').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/refuse-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"refuse-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/{{rideId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"{{rideId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drivers/{{driverId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers",
+								"{{driverId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cancel a Ride",
+			"item": [
+				{
+					"name": "Create Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"driverId\", jsonData.id)",
+									"});",
+									"",
+									"pm.test(\"Validate 'name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'available' is present and is a boolean\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('available').that.is.a('boolean');",
+									"});",
+									"",
+									"pm.test(\"Validate 'activation_date' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('activation_date').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'car'",
+									"pm.test(\"Validate 'car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"driverName\", '{{$randomFullName}}')\r",
+									"pm.environment.set(\"licensePlate\", \"{{$randomAbbreviation}}-{{$randomCreditCardMask}}\")\r",
+									"pm.environment.set(\"model\", \"{{$randomProductAdjective}}\")\r",
+									"pm.environment.set(\"color\", \"{{$randomColor}}\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{driverName}}\",\n    \"available\": true,\n    \"car\": {\n        \"license_plate\": \"{{licensePlate}}\",\n        \"model\": \"{{model}}\",\n        \"color\": \"{{color}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drivers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request a Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"rideId\", jsonData.id)",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('driver').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver'",
+									"pm.test(\"Validate 'driver.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver.car'",
+									"pm.test(\"Validate 'driver.car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"dropOff\", '{{$randomStreetAddress}}')\r",
+									"pm.environment.set(\"pickUp\", '{{$randomStreetAddress}}')"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"passenger\": {\n        \"name\": \"{{passengerName}}\",\n        \"email\": \"{{passengerEmail}}\"\n    },\n    \"pick_up\": \"{{pickUp}}\",\n    \"drop_off\": \"{{dropOff}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/request-driver",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"request-driver"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string').and.equals('CANCELLED');;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/cancel-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"cancel-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/{{rideId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"{{rideId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drivers/{{driverId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers",
+								"{{driverId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accept a Ride",
+			"item": [
+				{
+					"name": "Create Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"driverId\", jsonData.id)",
+									"});",
+									"",
+									"pm.test(\"Validate 'name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'available' is present and is a boolean\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('available').that.is.a('boolean');",
+									"});",
+									"",
+									"pm.test(\"Validate 'activation_date' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('activation_date').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'car'",
+									"pm.test(\"Validate 'car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"driverName\", '{{$randomFullName}}')\r",
+									"pm.environment.set(\"licensePlate\", \"{{$randomAbbreviation}}-{{$randomCreditCardMask}}\")\r",
+									"pm.environment.set(\"model\", \"{{$randomProductAdjective}}\")\r",
+									"pm.environment.set(\"color\", \"{{$randomColor}}\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{driverName}}\",\n    \"available\": true,\n    \"car\": {\n        \"license_plate\": \"{{licensePlate}}\",\n        \"model\": \"{{model}}\",\n        \"color\": \"{{color}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drivers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request a Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"rideId\", jsonData.id)",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('driver').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver'",
+									"pm.test(\"Validate 'driver.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver.car'",
+									"pm.test(\"Validate 'driver.car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"dropOff\", '{{$randomStreetAddress}}')\r",
+									"pm.environment.set(\"pickUp\", '{{$randomStreetAddress}}')"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"passenger\": {\n        \"name\": \"{{passengerName}}\",\n        \"email\": \"{{passengerEmail}}\"\n    },\n    \"pick_up\": \"{{pickUp}}\",\n    \"drop_off\": \"{{dropOff}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/request-driver",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"request-driver"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('passenger').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is exactly 'IN_PROGRESS'\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string').and.equals('IN_PROGRESS');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'passenger'",
+									"pm.test(\"Validate 'passenger.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger.email' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('email').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/accept-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"accept-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/{{rideId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"{{rideId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drivers/{{driverId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers",
+								"{{driverId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Finish a Ride",
+			"item": [
+				{
+					"name": "Create Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"driverId\", jsonData.id)",
+									"});",
+									"",
+									"pm.test(\"Validate 'name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'available' is present and is a boolean\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('available').that.is.a('boolean');",
+									"});",
+									"",
+									"pm.test(\"Validate 'activation_date' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('activation_date').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'car'",
+									"pm.test(\"Validate 'car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"driverName\", '{{$randomFullName}}')\r",
+									"pm.environment.set(\"licensePlate\", \"{{$randomAbbreviation}}-{{$randomCreditCardMask}}\")\r",
+									"pm.environment.set(\"model\", \"{{$randomProductAdjective}}\")\r",
+									"pm.environment.set(\"color\", \"{{$randomColor}}\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{driverName}}\",\n    \"available\": true,\n    \"car\": {\n        \"license_plate\": \"{{licensePlate}}\",\n        \"model\": \"{{model}}\",\n        \"color\": \"{{color}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drivers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request a Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"rideId\", jsonData.id)",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('driver').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver'",
+									"pm.test(\"Validate 'driver.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver.car'",
+									"pm.test(\"Validate 'driver.car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"dropOff\", '{{$randomStreetAddress}}')\r",
+									"pm.environment.set(\"pickUp\", '{{$randomStreetAddress}}')"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"passenger\": {\n        \"name\": \"{{passengerName}}\",\n        \"email\": \"{{passengerEmail}}\"\n    },\n    \"pick_up\": \"{{pickUp}}\",\n    \"drop_off\": \"{{dropOff}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/request-driver",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"request-driver"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('passenger').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is exactly 'IN_PROGRESS'\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string').and.equals('IN_PROGRESS');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'passenger'",
+									"pm.test(\"Validate 'passenger.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger.email' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('email').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/accept-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"accept-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finish a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('passenger').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is exactly 'IN_PROGRESS'\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string').and.equals('COMPLETED');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'passenger'",
+									"pm.test(\"Validate 'passenger.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger.email' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('email').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}},\n    \"price\": 455555.585\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/finish-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"finish-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/{{rideId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"{{rideId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drivers/{{driverId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers",
+								"{{driverId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Endpoints",
+			"item": [
+				{
+					"name": "Create Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo",
+									"pm.test(\"Validate 'name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'available' is present and is a boolean\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('available').that.is.a('boolean');",
+									"});",
+									"",
+									"pm.test(\"Validate 'activation_date' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('activation_date').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'car'",
+									"pm.test(\"Validate 'car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"driverName\", '{{$randomFullName}}')\r",
+									"pm.environment.set(\"licensePlate\", \"{{$randomAbbreviation}}-{{$randomCreditCardMask}}\")\r",
+									"pm.environment.set(\"model\", \"{{$randomProductAdjective}}\")\r",
+									"pm.environment.set(\"color\", \"{{$randomColor}}\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{driverName}}\",\n    \"available\": true,\n    \"car\": {\n        \"license_plate\": \"{{licensePlate}}\",\n        \"model\": \"{{model}}\",\n        \"color\": \"{{color}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drivers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request a Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"    pm.environment.set(\"rideId\", jsonData.id)",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('driver').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver'",
+									"pm.test(\"Validate 'driver.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json().driver).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'driver.car'",
+									"pm.test(\"Validate 'driver.car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'driver.car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().driver.car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"dropOff\", '{{$randomStreetAddress}}')\r",
+									"pm.environment.set(\"pickUp\", '{{$randomStreetAddress}}')"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"passenger\": {\n        \"name\": \"{{passengerName}}\",\n        \"email\": \"{{passengerEmail}}\"\n    },\n    \"pick_up\": \"{{pickUp}}\",\n    \"drop_off\": \"{{dropOff}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/request-driver",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"request-driver"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Waiting Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo",
+									"pm.test(\"Validate 'name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'available' is present and is a boolean\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('available').that.is.a('boolean');",
+									"});",
+									"",
+									"pm.test(\"Validate 'activation_date' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('activation_date').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('car').that.is.an('object');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'car'",
+									"pm.test(\"Validate 'car.license_plate' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('license_plate').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.model' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('model').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'car.color' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().car).to.have.property('color').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"driverName\", \"Antonio Carlos\")\r",
+									"pm.environment.set(\"licensePlate\", \"ABC1234\")\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/drivers/{{driverId}}/get-rides",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers",
+								"{{driverId}}",
+								"get-rides"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('passenger').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is exactly 'IN_PROGRESS'\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string').and.equals('IN_PROGRESS');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'passenger'",
+									"pm.test(\"Validate 'passenger.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger.email' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('email').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/accept-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"accept-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refuse a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('passenger').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'passenger'",
+									"pm.test(\"Validate 'passenger.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger.email' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('email').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/refuse-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"refuse-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string').and.equals('CANCELLED');;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/cancel-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"cancel-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finish a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Testes para validar a estrutura do payload e o tipo de cada campo principal",
+									"pm.test(\"Validate 'id' is present and is a number\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('id').that.is.a('number');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger' is present and is an object\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('passenger').that.is.an('object');",
+									"});",
+									"",
+									"pm.test(\"Validate 'pick_up' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('pick_up').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'drop_off' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('drop_off').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'status' is present and is exactly 'IN_PROGRESS'\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status').that.is.a('string').and.equals('IN_PROGRESS');",
+									"});",
+									"",
+									"// Sub-testes para o objeto 'passenger'",
+									"pm.test(\"Validate 'passenger.name' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('name').that.is.a('string');",
+									"});",
+									"",
+									"pm.test(\"Validate 'passenger.email' is present and is a string\", function () {",
+									"    pm.expect(pm.response.json().passenger).to.have.property('email').that.is.a('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{rideId}},\n    \"price\": 455555.585\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/finish-ride",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"finish-ride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Driver",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/drivers/{{driverId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"drivers",
+								"{{driverId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete passenger by id\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/rides/{{rideId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"rides",
+								"{{rideId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
